@@ -1,0 +1,126 @@
+﻿@model EcommerceWebsite.Models.HomeIndexViewModel
+@using PagedList;
+@using PagedList.Mvc;
+@{
+    ViewBag.Title = "Home Page";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        /* Add your custom styles here */
+
+        /* Header styles */
+        .header {
+            background-color: #f8f8f8;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+   
+
+        .product-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            margin-bottom: 30px;
+        }
+
+        .product-item {
+            width: 100%; /* Adjust the width to make fewer items appear in a row for larger display */
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+            transition: 0.3s;
+            border-radius: 5px;
+        }
+
+        /* Increase the height of the product image container */
+        .product-image {
+            height: 150px; /* Adjust the height for larger images */
+            width: 100%;
+            object-fit: cover;
+            border-top-left-radius: 5px;
+            border-top-right-radius: 5px;
+        }
+
+        /* Increase padding for better readability */
+        .product-details {
+            padding: 15px;
+            text-align: center;
+        }
+
+        .product-name {
+            font-size: 18px; /* Increase font size for product name */
+            margin: 8px 0;
+        }
+
+        .product-price {
+            font-weight: bold;
+            font-size: 16px; /* Adjust font size for product price */
+        }
+        /* Pagination styles */
+        .pagination-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Buy Products From here</h1>
+    </div>
+
+
+    <div class="container">
+        <div class="row product-container">
+            @foreach (var item in Model.ListOfProducts)
+            {
+                <div class="col-md-3 col-sm-4 col-xs-6">
+                    <div class="thumbnail product-item">
+                        <a href="@Url.Action("ProductDetail", "Product", new { productId = item.PruductID })">
+                            @if (item.Image != null)  // Check if the image byte array is not null
+                            {
+                                <img class="img-responsive product-image" src="data:image;base64,@Convert.ToBase64String(item.Image)" alt="@item.ProductName" />
+                            }
+                            else
+                            {
+                                <p>No Image Available</p>
+                            }
+
+                        </a>
+                        <div class="caption product-details">
+                            <h5 class="product-name">@item.ProductName</h5>
+                            <p class="product-price">@item.Price Taka</p>
+                            @if (int.Parse(item.Quantity) > 0)
+                            {
+                                <form method="post" action="@Url.Action("AddToCart", "Home")">
+                                    <input type="hidden" name="productId" value="@item.PruductID" />
+                                    <input type="hidden" name="url" value="Index" />
+                                    <button type="submit" class="btn btn-success">
+                                        <i class="fa fa-shopping-cart"></i> Add to Cart
+                                    </button>
+                                </form>
+                                <p class="product-availability text-success">In Stock</p>
+                            }
+                            else
+                            {
+                                <p class="product-availability text-danger">Out of Stock</p>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <div class="pagination-container">
+            @Html.PagedListPager(Model.ListOfProducts, page => Url.Action("Index", new { page, search = Request.QueryString["search"] }), new PagedListRenderOptions() { Display = PagedListDisplayMode.IfNeeded, DisplayItemSliceAndTotal = true })
+        </div>
+    </div>
+    </body>
+</html>
+    <!-- ... (Rest of your HTML) ... -->

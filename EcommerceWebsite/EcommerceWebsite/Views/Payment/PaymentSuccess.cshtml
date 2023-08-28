@@ -1,0 +1,14 @@
+﻿@{
+    ViewBag.Title = "Payment Success";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Payment Successful</h2>
+
+<div class="alert alert-success">
+    <strong>Payment was successful!</strong> Your payment has been processed.
+</div>
+
+<form action="@Url.Action("PrintOut", "Payment")" method="post">
+    <button type="submit">PrintOut</button>
+</form>

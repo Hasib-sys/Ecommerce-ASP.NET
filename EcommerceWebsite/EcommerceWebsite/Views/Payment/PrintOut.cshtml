@@ -1,0 +1,67 @@
+﻿@using EcommerceWebsite.Models;
+@{
+    ViewBag.Title = "PrintOut";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PrintOut</title>
+    <link rel="stylesheet" type="text/css" media="print" href="print.css">
+</head>
+<body>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Line Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                decimal Total = 0;
+            }
+            @foreach (Item item in (List<Item>)Session["cart"])
+            {
+                int quantity = item.Quantity;
+                decimal price = Convert.ToDecimal(item.Product.Price);
+                decimal lineTotal = quantity * price;
+
+                Total += lineTotal;
+
+                <tr>
+                    <td>@item.Product.ProductName</td>
+                    <td>@item.Product.Price Taka.</td>
+                    <td>@item.Quantity</td>
+                    <td>@lineTotal Taka.</td>
+                </tr>
+
+
+            }
+
+            <tr>
+                <td colspan="4" class="text-right"><b>Total: @Total Taka.</b></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <br />
+    <br />
+
+    <div id="paymentSuccessMessage" style="text-align: center; margin-top: 20px;">
+        <h3>Payment Successful</h3>
+        <p>Your payment has been successfully processed.</p>
+    </div>
+
+    <button id="printButton">Print</button>
+
+    <script>
+        document.getElementById('printButton').addEventListener('click', function () {
+            window.print();
+        });
+    </script>
+</body>
+</html>

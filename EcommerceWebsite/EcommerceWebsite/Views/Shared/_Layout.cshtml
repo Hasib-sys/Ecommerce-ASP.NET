@@ -1,0 +1,69 @@
+﻿@using EcommerceWebsite.Models;
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - My ASP.NET Application</title>
+    @Styles.Render("~/Content/css")
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/Content/bootstrap.css" rel="stylesheet" />
+    <link href="~/Content/MyMainLayOut.css" rel="stylesheet" />
+    @Scripts.Render("~/bundles/modernizr")
+
+</head>
+<body>
+    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark">
+        <div class="container">
+            <div class="col-md-6 col-sm-6 col-xs-6">
+                <div class="logo">
+                    <h1><a href="#">Ecommerce Website</span></a></h1>
+                </div>
+            </div>
+            <div class="collapse navbar-collapse d-sm-inline-flex justify-content-between">
+                <ul class="nav nav-pills">
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <li class="active">@Html.ActionLink("Home", "Index", "Home", new { area = "" }, new { @class = "nav-link" })</li>
+                        if (User.IsInRole("Admin"))
+                        {
+                    <li class="active">@Html.ActionLink("Admin Panel", "Product", "Admin", new { area = "" }, new { @class = "nav-link" })</li>
+                        }
+                    }
+                    <li class="dropdown">
+                        <a data-toggle="dropdown" class="dropdown-toggle" href="#"> <b class="caret"></b><i class="fa fa-shopping-cart"></i> Cart </a>
+                        <ul class="dropdown-menu">
+                            @if (Session["cart"] != null)
+                            {
+                                foreach (Item item in (List<Item>)Session["cart"])
+                                {
+                                    <li class="active">
+                                        <a href="@Url.Action("RemoveFromCart", "Home", new { productId=item.Product.PruductID})">@item.Product.ProductName (@item.Quantity) <i class="fa fa-times"></i></a>
+                                    </li>
+                                }
+                            }
+                            <li class="divider"></li>
+                            <li class="active"><a href="@Url.Action("Checkout","Home")">Checkout</a></li>
+                        </ul>
+                    </li>
+                    @Html.Partial("_LoginPartial")
+                </ul>
+                
+               
+            </div>
+        </div>
+    </nav>
+    <div class="container body-content">
+        @RenderBody()
+        <hr />
+        <footer>
+            <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
+        </footer>
+    </div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+</body>
+</html>
